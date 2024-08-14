@@ -6,6 +6,7 @@ const newDesc = ref('')
 const loading = ref(false)
 const state = () => ({
   editStatus: 0,
+  editId: ''
 })
 
 const { data: todos } = await useFetch('/api/dash')
@@ -42,17 +43,22 @@ async function editTodo(editId) {
   newTitle.value = getOne.value.title
   newDesc.value = getOne.value.description
   state.editStatus = true
+  state.editId = editId
 }
 
 function cancelEdit() {
   state.editStatus = false
 }
 
-async function updateTodo(todo) {
-  await $fetch(`/api/dash/${todo.id}`, {
+async function updateTodo(id) {
+  await $fetch(`/api/dash/${id}`, {
     method: 'PATCH',
-    body: { title: newTitle.value, description: newDesc.value, completed: !todo.completed }
+    body: { title: newTitle.value, description: newDesc.value }
   })
+  newTitle.value = ''
+  newDesc.value = ''
+  state.editStatus = false
+  state.editId = ''
 }
 
 async function deleteTodo(todoId) {
@@ -70,7 +76,7 @@ async function deleteTodo(todoId) {
         <ul class="py-6 px-2 flex flex-col gap-4 dark:divide-gray-800">
           <li v-for="todo of todos" :key="todo.id" class="flex items-center gap-4 p-2 shadow rounded">
             <div class="flex-1">
-              <h3 class="text-lg font-medium" :class="[todo.completed ? 'line-through text-gray-500' : '']">
+              <h3 class="text-lg font-medium">
                 {{ todo.title }}
               </h3>
               <p>{{ todo.description }}</p>
@@ -80,14 +86,14 @@ async function deleteTodo(todoId) {
                   {{ timeAgo }}</UseTimeAgo>
               </span>
             </div>
-            <UToggle :model-value="Boolean(todo.completed)" @update:model-value="updateTodo(todo)" />
+            <!-- <UToggle :model-value="Boolean(todo.completed)" @update:model-value="updateTodo(todo.id)" /> -->
             <UButton color="blue" variant="solid" size="xl" icon="i-heroicons-pencil-20-solid" class="text-white" @click="editTodo(todo.id)" />
             <UButton color="red" variant="solid" size="xl" icon="i-heroicons-x-mark-20-solid" class="text-white" @click="deleteTodo(todo.id)" />
           </li>
         </ul>
       </div>
     </div>
-    <form class="flex flex-col gap-1 w-[300px] h-full p-2 shadow-xl shadow-black" @submit.prevent="state.editStatus ? addTodo : updateTodo">
+    <form class="flex flex-col gap-1 w-[300px] h-full p-2 shadow-xl shadow-black" @submit.prevent="state.editStatus ? updateTodo(state.editId) : addTodo()">
       <h3 class="text-xl text">
         {{ state.editStatus ? "Edit Todo" : "Create Todo" }}
       </h3>

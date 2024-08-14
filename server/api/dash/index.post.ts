@@ -16,6 +16,5 @@ export default eventHandler(async (event) => {
   op.set(['list', todo.id], todo)
   op.set(['list_updated'], true)
   await op.commit()
-
   return todo
 })
