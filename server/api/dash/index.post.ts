@@ -6,6 +6,7 @@ export default eventHandler(async (event) => {
     id: z.string().optional().default(() => randomUUID()),
     title: z.string().trim().min(1),
     description: z.string().trim().min(1),
+    time: z.string().trim(),
     completed: z.boolean().default(false),
     createdAt: z.string().default(Date),
     updatedAt: z.string().default(Date),
@@ -16,6 +17,5 @@ export default eventHandler(async (event) => {
   op.set(['list', todo.id], todo)
   op.set(['list_updated'], true)
   await op.commit()
-
   return todo
 })

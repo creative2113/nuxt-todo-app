@@ -4,8 +4,10 @@ export default eventHandler(async (event) => {
   const { todoId } = await getValidatedRouterParams(event, z.object({
     todoId: z.string().length(36)
   }).parse)
-  const { completed } = await readValidatedBody(event, z.object({
-    completed: z.boolean()
+  const updateTodo = await readValidatedBody(event, z.object({
+    title: z.string().trim().min(1),
+    description: z.string().trim().min(1),
+    time: z.string().trim(),
   }).parse)
   const kv = await useKv()
 
@@ -21,7 +23,7 @@ export default eventHandler(async (event) => {
   op.set(['list', todoId], {
     ...todo.value,
     updatedAt: new Date(),
-    completed
+    ...updateTodo
   })
   op.set(['list_updated'], true)
   await op.commit()
