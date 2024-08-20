@@ -51,6 +51,9 @@ async function editTodo(editId) {
 
 function cancelEdit() {
   state.editStatus = false
+  newTitle.value = ''
+  newDesc.value = ''
+  newTime.value = ''
 }
 
 async function updateTodo(id) {
@@ -111,6 +114,7 @@ async function deleteTodo(todoId) {
         <UInput type="time" id="time" v-model="newTime" required />
       </div>
       <UButton size="xl" :label="state.editStatus ? 'Update' : 'Create'" type="submit" color="blue" icon="i-heroicons-plus-20-solid" :loading="loading" />
+      <UButton v-if="state.editStatus" color="red" type="button" label="Cancel" @click="cancelEdit" />
     </form>
   </div>
 </template>
