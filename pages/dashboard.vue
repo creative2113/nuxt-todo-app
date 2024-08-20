@@ -56,7 +56,7 @@ function cancelEdit() {
 async function updateTodo(id) {
   await $fetch(`/api/dash/${id}`, {
     method: 'PATCH',
-    body: { title: newTitle.value, description: newDesc.value }
+    body: { title: newTitle.value, description: newDesc.value, time: newTime.value }
   })
   newTitle.value = ''
   newDesc.value = ''
