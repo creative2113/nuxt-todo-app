@@ -6,7 +6,8 @@ export default eventHandler(async (event) => {
   }).parse)
   const updateTodo = await readValidatedBody(event, z.object({
     title: z.string().trim().min(1),
-    description: z.string().trim().min(1)
+    description: z.string().trim().min(1),
+    time: z.string().trim(),
   }).parse)
   const kv = await useKv()
 

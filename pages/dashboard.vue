@@ -3,6 +3,7 @@ import { UseTimeAgo } from '@vueuse/components'
 const toast = useToast()
 const newTitle = ref('')
 const newDesc = ref('')
+const newTime = ref('')
 const loading = ref(false)
 const state = () => ({
   editStatus: 0,
@@ -26,12 +27,13 @@ async function addTodo() {
   loading.value = true
   await $fetch('/api/dash', {
     method: 'POST',
-    body: { title: newTitle.value, description: newDesc.value }
+    body: { title: newTitle.value, description: newDesc.value, time: newTime.value }
   })
   loading.value = false
   state.editStatus = false
   newTitle.value = ''
   newDesc.value = ''
+  newTime.value = ''
 }
 
 async function editTodo(editId) {
@@ -42,6 +44,7 @@ async function editTodo(editId) {
   loading.value = false
   newTitle.value = getOne.value.title
   newDesc.value = getOne.value.description
+  newTime.value = getOne.value.time
   state.editStatus = true
   state.editId = editId
 }
@@ -53,10 +56,11 @@ function cancelEdit() {
 async function updateTodo(id) {
   await $fetch(`/api/dash/${id}`, {
     method: 'PATCH',
-    body: { title: newTitle.value, description: newDesc.value }
+    body: { title: newTitle.value, description: newDesc.value, time: newTime.value }
   })
   newTitle.value = ''
   newDesc.value = ''
+  newTime.value = ''
   state.editStatus = false
   state.editId = ''
 }
@@ -80,11 +84,12 @@ async function deleteTodo(todoId) {
                 {{ todo.title }}
               </h3>
               <p>{{ todo.description }}</p>
-              <span class="text-sm">
+              <p class="text-sm">
                 <UseTimeAgo v-slot="{ timeAgo }" :time="todo.createdAt">{{ timeAgo }}</UseTimeAgo>
                 <UseTimeAgo v-if="todo.createdAt !== todo.updatedAt" v-slot="{ timeAgo }" :time="todo.updatedAt"> ·
                   {{ timeAgo }}</UseTimeAgo>
-              </span>
+              </p>
+              <p>{{ todo.time }}</p>
             </div>
             <!-- <UToggle :model-value="Boolean(todo.completed)" @update:model-value="updateTodo(todo.id)" /> -->
             <UButton color="blue" variant="solid" size="xl" icon="i-heroicons-pencil-20-solid" class="text-white" @click="editTodo(todo.id)" />
@@ -102,6 +107,8 @@ async function deleteTodo(todoId) {
         <UInput id="title" v-model="newTitle" size="xl" required placeholder="Enter Title" />
         <label class="text-xl" for="desc">Description</label>
         <UTextarea id="desc" v-model="newDesc" size="xl" :rows="3" required placeholder="Enter Description" />
+        <label for="time">Alarm time</label>
+        <UInput type="time" id="time" v-model="newTime" required />
       </div>
       <UButton size="xl" :label="state.editStatus ? 'Update' : 'Create'" type="submit" color="blue" icon="i-heroicons-plus-20-solid" :loading="loading" />
     </form>
