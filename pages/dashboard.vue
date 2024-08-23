@@ -79,9 +79,10 @@ async function deleteTodo(todoId) {
   <div class="flex w-screen h-screen">
     <div class="w-[calc(100vw-300px)] h-full overflow-y-auto">
       <!-- <UAlert color="blue" variant="subtle" title="Share this page to collaborate with others." :actions="[{ label: 'Copy URL', click: copyUrl }, { label: 'New List', click: newList }]" /> -->
-      <div class="w-[calc(100%-40px)] m-auto max-w-[900px] shadow-xl px-2">
+      <div class="w-[calc(100%-40px)] m-auto max-w-[900px] px-2">
+        <h1 class="gradient-border text-2xl mx-8 font-bold mt-8">My First Nuxt Project</h1>
         <ul class="py-6 px-2 flex flex-col gap-4 dark:divide-gray-800">
-          <li v-for="todo of todos" :key="todo.id" class="flex items-center gap-4 p-2 shadow rounded">
+          <li v-for="todo of todos" :key="todo.id" class="flex items-center gap-4 p-2 border shadow rounded">
             <div class="flex-1">
               <h3 class="text-lg font-medium">
                 {{ todo.title }}
